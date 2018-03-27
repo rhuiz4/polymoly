@@ -18,6 +18,7 @@ int main(int argc, char **argv) {
 
   edges = new_matrix(4, 4);
   transform = new_matrix(4, 4);
+  polygons = new_matrix(4, 4);
 
   /* print_matrix( make_bezier() ); */
   /* printf("\n"); */
@@ -31,4 +32,5 @@ int main(int argc, char **argv) {
   
   free_matrix( edges );
   free_matrix( transform );
+  free_matrix( polygons );
 }  
