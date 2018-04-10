@@ -64,15 +64,15 @@ void draw_polygons( struct matrix *polygons, screen s, color c ) {
 		   polygons->m[0][point+1],
 		   polygons->m[1][point+1],
 		   s, c);
-	draw_line( polygons->m[0][point],
-		   polygons->m[1][point],
-		   polygons->m[0][point+2],
-		   polygons->m[1][point+2],
-		   s, c);
 	draw_line( polygons->m[0][point+1],
 		   polygons->m[1][point+1],
 		   polygons->m[0][point+2],
 		   polygons->m[1][point+2],
+		   s, c);
+	draw_line( polygons->m[0][point+2],
+		   polygons->m[1][point+2],
+		   polygons->m[0][point],
+		   polygons->m[1][point],
 		   s, c);
       }
     }
@@ -179,10 +179,10 @@ void add_sphere( struct matrix * polygons,
   longStop = step;
 
   //step++;
-  for ( lat = latStart; lat <= latStop; lat++ ) {
+  for ( lat = latStart; lat < latStop; lat++ ) {
     for ( longt = longStart; longt < longStop; longt++ ) {
 
-      index = lat * (step) + longt;
+      index = lat * (step+1) + longt;
       /*
       add_edge( edges, points->m[0][index],
                 points->m[1][index],
@@ -199,20 +199,20 @@ void add_sphere( struct matrix * polygons,
 		   points->m[0][index + 1],
 		   points->m[1][index + 1],
 		   points->m[2][index + 1],
-		   points->m[0][(index+1+step) % (points->lastcol)],
-		   points->m[1][(index+1+step) % (points->lastcol)],
-		   points->m[2][(index+1+step) % (points->lastcol)]
+		   points->m[0][(index+2+step) % (points->lastcol)],
+		   points->m[1][(index+2+step) % (points->lastcol)],
+		   points->m[2][(index+2+step) % (points->lastcol)]
 		   );
       add_polygon( polygons,
 		   points->m[0][index],
 		   points->m[1][index],
 		   points->m[2][index],
+		   points->m[0][(index+2+step) % (points->lastcol)],
+		   points->m[1][(index+2+step) % (points->lastcol)],
+		   points->m[2][(index+2+step) % (points->lastcol)],
 		   points->m[0][(index+1+step) % (points->lastcol)],
 		   points->m[1][(index+1+step) % (points->lastcol)],
-		   points->m[2][(index+1+step) % (points->lastcol)],
-		   points->m[0][(index+step) % (points->lastcol)],
-		   points->m[1][(index+step) % (points->lastcol)],
-		   points->m[2][(index+step) % (points->lastcol)]
+		   points->m[2][(index+1+step) % (points->lastcol)]
 		   );
     }
   }
@@ -293,10 +293,10 @@ void add_torus( struct matrix * polygons,
   longStop = step;
 
   
-  for ( lat = latStart; lat <= latStop; lat++ ) {
-    for ( longt = longStart; longt <= longStop; longt++ ) {
+  for ( lat = latStart; lat < latStop; lat++ ) {
+    for ( longt = longStart; longt < longStop; longt++ ) {
       
-      index = lat * (step) + longt;
+      index = lat * (step+1) + longt;
       /*
       add_edge( edges, points->m[0][index],
                 points->m[1][index],
@@ -310,26 +310,26 @@ void add_torus( struct matrix * polygons,
                    points->m[0][index],
                    points->m[1][index],
                    points->m[2][index],
-                   points->m[0][(index + 1) % (points->lastcol)],
-		   points->m[1][(index + 1) % (points->lastcol)],
-                   points->m[2][(index + 1) % (points->lastcol)],
-                   points->m[0][(index+step) % (points->lastcol)],
-                   points->m[1][(index+step) % (points->lastcol)],
-                   points->m[2][(index+step) % (points->lastcol)]
+                   points->m[0][(index + 1 + step) % (points->lastcol)],
+		   points->m[1][(index + 1 + step) % (points->lastcol)],
+                   points->m[2][(index + 1 + step) % (points->lastcol)],
+                   points->m[0][(index+2+step) % (points->lastcol)],
+                   points->m[1][(index+2+step) % (points->lastcol)],
+                   points->m[2][(index+2+step) % (points->lastcol)]
                    );
-      /*
+      
       add_polygon( polygons,
-                   points->m[0][index+1],
-                   points->m[1][index+1],
-                   points->m[2][index+1],
-                   points->m[0][(index+1+step) % (points->lastcol)],
-                   points->m[1][(index+1+step) % (points->lastcol)],
-                   points->m[2][(index+1+step) % (points->lastcol)],
-                   points->m[0][(index+step) % (points->lastcol)],
-                   points->m[1][(index+step) % (points->lastcol)],
-                   points->m[2][(index+step) % (points->lastcol)]
+                   points->m[0][index],
+                   points->m[1][index],
+                   points->m[2][index],
+                   points->m[0][(index+2+step) % (points->lastcol)],
+                   points->m[1][(index+2+step) % (points->lastcol)],
+                   points->m[2][(index+2+step) % (points->lastcol)],
+                   points->m[0][(index+1) % (points->lastcol)],
+                   points->m[1][(index+1) % (points->lastcol)],
+                   points->m[2][(index+1) % (points->lastcol)]
                    );
-      */
+      
     }
   }
   free_matrix(points);
@@ -363,7 +363,7 @@ struct matrix * generate_torus( double cx, double cy, double cz,
   for (rotation = rot_start; rotation < rot_stop; rotation++) {
     rot = (double)rotation / step;
 
-    for(circle = circ_start; circle < circ_stop; circle++){
+    for(circle = circ_start; circle <= circ_stop; circle++){
       circ = (double)circle / step;
 
       x = cos(2*M_PI * rot) *
